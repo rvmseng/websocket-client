@@ -5,13 +5,19 @@ import java.util.Scanner;
 public class Demo {
 
 	private static WebSocketClient websocket;
-	
+
 	public static void main(String[] args) {
 
 		try {
-			websocket = new WebSocketClient("wss://javascript.info/article/websocket/demo/hello/");
+			// wss://javascript.info/article/websocket/demo/hello/
+			// wss://pushengine.ramandtech.com/lightstreamer/
+
+			websocket = new WebSocketClient("wss://pushengine.ramandtech.com/lightstreamer/");
+			// websocket = new
+			// WebSocketClient("wss://javascript.info/article/websocket/demo/hello/");
 			websocket.connect();
 
+			// websocket.sendMessag("Reza");
 			getInputFromUser();
 
 		} catch (Exception e) {
@@ -35,5 +41,4 @@ public class Demo {
 			}
 		}
 	}
-
 }
