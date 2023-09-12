@@ -43,9 +43,10 @@ public class WebSocketClient {
 
 		Map<String, String> customHeaders = new HashMap<String, String>();
 		customHeaders.put("Connection", "Upgrade");
+		customHeaders.put("Origin", "https://rivas.irfarabi.com");
 		customHeaders.put("Sec-Websocket-Extensions", "permessage-deflate; client_max_window_bits");
 		customHeaders.put("Sec-Websocket-Key", Helper.generateBse64Random());
-		customHeaders.put("Sec-Websocket-Protocol", "js.lightstreamer.com");
+		customHeaders.put("Sec-Websocket-Protocol", "TLCP-2.1.0.lightstreamer.com");
 		customHeaders.put("Sec-Websocket-Version", "13");
 		customHeaders.put("Upgrade", "websocket");
 		customHeaders.put("User-Agent",
@@ -72,11 +73,11 @@ public class WebSocketClient {
 		// Set a custom property if needed (e.g., to configure a proxy)
 		// client.getProperties().put(ClientProperties.PROXY_URI,"http://your.proxy.server.url");
 
-		SSLContext sslContext=disableAndGetSSLContext();
-		SSLParameters sslParameters = new SSLParameters();
-		sslParameters.setEndpointIdentificationAlgorithm("");
+		/*
+		 * SSLContext sslContext=disableAndGetSSLContext(); SSLParameters sslParameters
+		 * = new SSLParameters(); sslParameters.setEndpointIdentificationAlgorithm("");
+		 */
 
-		// Connect to the WebSocket server
 		/*
 		 * client.setDefaultSSLContext(sslContext);
 		 * client.setDefaultSSLParameters(sslParameters);

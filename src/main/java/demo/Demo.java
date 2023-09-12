@@ -9,16 +9,19 @@ public class Demo {
 	public static void main(String[] args) {
 
 		try {
+			System.setProperty("com.sun.security.enableAIAcaIssuers","true");
+			
 			// wss://javascript.info/article/websocket/demo/hello/
 			// wss://pushengine.ramandtech.com/lightstreamer/
 
 			websocket = new WebSocketClient("wss://pushengine.ramandtech.com/lightstreamer/");
-			// websocket = new
-			// WebSocketClient("wss://javascript.info/article/websocket/demo/hello/");
+			//websocket = new WebSocketClient("wss://javascript.info/article/websocket/demo/hello/");
+			
+			
 			websocket.connect();
-
-			// websocket.sendMessag("Reza");
-			getInputFromUser();
+			websocket.sendMessag("control\r\n"
+					+ "LS_subId=5&LS_op=delete&LS_reqId=13&");
+			//getInputFromUser();
 
 		} catch (Exception e) {
 			e.printStackTrace();
