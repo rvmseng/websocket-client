@@ -1,4 +1,4 @@
-package demo;
+package util;
 
 
 import java.security.SecureRandom;

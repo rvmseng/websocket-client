@@ -1,9 +1,11 @@
-package demo;
+package client;
 
 import java.io.IOException;
 import java.net.URI;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -14,8 +16,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.websocket.ClientEndpoint;
+import javax.websocket.ClientEndpointConfig;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
+import javax.websocket.Endpoint;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -23,9 +28,10 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
 import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 
 @ClientEndpoint
-public class WebSocketClient {
+public class WebSocketClient extends Endpoint {
 	private String SERVER_URI;
 	private Session session;
 
@@ -42,17 +48,25 @@ public class WebSocketClient {
 		System.out.println("Session ID is > " + session.getId());
 
 		Map<String, String> customHeaders = new HashMap<String, String>();
-		customHeaders.put("Connection", "Upgrade");
-		customHeaders.put("Origin", "https://rivas.irfarabi.com");
-		customHeaders.put("Sec-Websocket-Extensions", "permessage-deflate; client_max_window_bits");
-		customHeaders.put("Sec-Websocket-Key", Helper.generateBse64Random());
-		customHeaders.put("Sec-Websocket-Protocol", "TLCP-2.1.0.lightstreamer.com");
-		customHeaders.put("Sec-Websocket-Version", "13");
-		customHeaders.put("Upgrade", "websocket");
-		customHeaders.put("User-Agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");
+		/*
+		 * customHeaders.put("Connection", "Upgrade"); customHeaders.put("Origin",
+		 * "https://rivas.irfarabi.com"); customHeaders.put("Sec-Websocket-Extensions",
+		 * "permessage-deflate; client_max_window_bits");
+		 * customHeaders.put("Sec-Websocket-Key", Helper.generateBse64Random());
+		 * customHeaders.put("Sec-Websocket-Version", "13");
+		 * customHeaders.put("Upgrade", "websocket");
+		 * 
+		 * customHeaders.put("Sec-Websocket-Protocol", "TLCP-2.1.0.lightstreamer.com");
+		 * customHeaders.put("User-Agent",
+		 * "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+		 * );
+		 */
 
-		session.getUserProperties().put("headers", customHeaders);
+		/*
+		 * session.getRequestParameterMap().put("Sec-Websocket-Protocol",
+		 * Arrays.asList("TLCP-2.1.0.lightstreamer.com"));
+		 * session.getRequestParameterMap().put("X-Array", Arrays.asList("Sample"));
+		 */
 
 		this.session = session;
 	}
@@ -71,7 +85,7 @@ public class WebSocketClient {
 		ClientManager client = ClientManager.createClient();
 
 		// Set a custom property if needed (e.g., to configure a proxy)
-		// client.getProperties().put(ClientProperties.PROXY_URI,"http://your.proxy.server.url");
+		// client.getProperties().put(ClientProperties.PROXY_URI,"https://127.0.0.1:8080");
 
 		/*
 		 * SSLContext sslContext=disableAndGetSSLContext(); SSLParameters sslParameters
@@ -82,8 +96,17 @@ public class WebSocketClient {
 		 * client.setDefaultSSLContext(sslContext);
 		 * client.setDefaultSSLParameters(sslParameters);
 		 */
-		
-		client.connectToServer(this, new URI(SERVER_URI));
+
+		ClientEndpointConfig.Builder configBuilder = ClientEndpointConfig.Builder.create();
+
+		configBuilder.configurator(new ClientEndpointConfig.Configurator() {
+			public void beforeRequest(Map<String, List<String>> headers) {
+				headers.put("Sec-Websocket-Protocol", Arrays.asList("TLCP-2.1.0.lightstreamer.com"));
+			}
+		});
+
+		ClientEndpointConfig clientConfig = configBuilder.build();
+		client.connectToServer(this, clientConfig, new URI(SERVER_URI));
 	}
 
 	public boolean checkSessionIsLive() {
@@ -159,5 +182,10 @@ public class WebSocketClient {
 
 		return sslContext;
 
+	}
+
+	@Override
+	public void onOpen(Session session, EndpointConfig config) {
+		onOpen(session);
 	}
 }

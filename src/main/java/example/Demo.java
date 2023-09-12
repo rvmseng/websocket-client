@@ -1,6 +1,8 @@
-package demo;
+package example;
 
 import java.util.Scanner;
+
+import client.WebSocketClient;
 
 public class Demo {
 
@@ -9,19 +11,25 @@ public class Demo {
 	public static void main(String[] args) {
 
 		try {
-			System.setProperty("com.sun.security.enableAIAcaIssuers","true");
-			
+
+			System.setProperty("com.sun.security.enableAIAcaIssuers", "true");
+
+			/*
+			 * System.setProperty("https.proxyHost", "127.0.0.1");
+			 * System.setProperty("https.proxyPort", "8080");
+			 * System.setProperty("http.proxyHost", "127.0.0.1");
+			 * System.setProperty("http.proxyPort", "8080");
+			 */
+
 			// wss://javascript.info/article/websocket/demo/hello/
 			// wss://pushengine.ramandtech.com/lightstreamer/
 
 			websocket = new WebSocketClient("wss://pushengine.ramandtech.com/lightstreamer/");
-			//websocket = new WebSocketClient("wss://javascript.info/article/websocket/demo/hello/");
-			
-			
+			//websocket = new WebSocketClient("ws://javascript.info/article/websocket/demo/hello/");
+
 			websocket.connect();
-			websocket.sendMessag("control\r\n"
-					+ "LS_subId=5&LS_op=delete&LS_reqId=13&");
-			//getInputFromUser();
+			websocket.sendMessag("control\r\n" + "LS_subId=5&LS_op=delete&LS_reqId=13&");
+			// getInputFromUser();
 
 		} catch (Exception e) {
 			e.printStackTrace();
